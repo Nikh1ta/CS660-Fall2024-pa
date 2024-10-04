@@ -1,0 +1,20 @@
+PA1 writeup
+
+Describe any design decisions you made.
+
+Many design decisions were made like-
+In HeapFile  while inserting a tuple, it first checks if the last page has enough space, and if not, it creates a new page.
+HeapPage uses a header to track the usage of slots.
+Tuple and TupleDesc to manages the schema and structure of the tuples. Serialization and deserialization were key components.
+
+Missing or Incomplete elements-
+No major missing to incomplete elements. Struggled a bit with the HeapPage:EmptyPages test case which throws an exception when a file already exists. Had a bit of an issue while overwriting pre existing files.
+
+Answer the analytical questions- 
+Done in gradescope!
+
+Describe how long you spent on the assignment, and whether there was anything you found particularly difficult or confusing- We spent around 10 hours on the assignment. We struggled a bit with Handling the Heapfile mainly
+
+If you collaborate with someone else, you have to describe how you split the workload-
+Nilay- Work on the Technical questions and debugging
+Nikhita- worked on the HeapFile and HeapPage files and also the write up.
