@@ -19,9 +19,13 @@ public:
 
 class TupleDesc {
   // TODO pa2: add private members
+ std::vector<type_t> types;
+ std::vector<std::string> names;
 
 public:
-  TupleDesc() = default;
+ TupleDesc() = default;
+
+
   /**
    * @brief Construct a new Tuple Desc object
    * @details Construct a new TupleDesc object with the provided types and names

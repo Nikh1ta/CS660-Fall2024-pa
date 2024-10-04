@@ -13,15 +13,16 @@ namespace db {
  * @note A `DbFile` object owns the `TupleDesc` object that describes the schema of the tuples in the file.
  */
 class DbFile {
-  mutable std::vector<size_t> reads;
-  mutable std::vector<size_t> writes;
+ mutable std::vector<size_t> reads;
+ mutable std::vector<size_t> writes;
 
-  // TODO pa2: add private member for file handler
+ // Adding private member for file handler
+ int fd;  // File descriptor for the file
 
 protected:
-  const std::string name;
-  const TupleDesc td;
-  size_t numPages;
+ const std::string name;
+ const TupleDesc td;
+ size_t numPages;
 
 public:
   /**
