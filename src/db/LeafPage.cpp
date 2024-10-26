@@ -60,7 +60,7 @@ int LeafPage::split(LeafPage &new_page) {
 
 Tuple LeafPage::getTuple(size_t slot) const {
     if (slot >= header->size) {
-        throw std::out_of_range("Slot index out of range");
+      throw std::out_of_range("Slot index out of range");
     }
     size_t offset = slot * td.length();
     return td.deserialize(data + offset);
