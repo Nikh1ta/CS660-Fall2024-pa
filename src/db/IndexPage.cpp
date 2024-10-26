@@ -13,15 +13,14 @@ IndexPage::IndexPage(Page &page) {
 
 bool IndexPage::insert(int key, size_t child) {
   int placeToInsert = 0;
-  bool biggest = 1;
+  bool biggest = true;
   for (int i = 0; i < header->size; i++) {
     if (keys[i] > key) {
       placeToInsert = i;
-      biggest = 0;
+      biggest = false;
       break;
     }
   }
-
   if (!biggest) {
     for (int i = header->size; i > placeToInsert; i--) {
       keys[i] = keys[i - 1];
@@ -33,19 +32,16 @@ bool IndexPage::insert(int key, size_t child) {
 
   keys[placeToInsert] = key;
   children[placeToInsert] = child;
-  header->size += 1;
-
+  header->size++;
   return header->size == capacity;
 }
 
 int IndexPage::split(IndexPage &new_page) {
   header->size = capacity / 2;
   new_page.header->size = capacity / 2 - 1;
-
   for (int i = 0; i < new_page.header->size; i++) {
     new_page.keys[i] = keys[header->size + 1 + i];
     new_page.children[i] = children[header->size + 1 + i];
   }
-
-  return keys[header->size];  // Return the middle key for the parent node
+  return keys[header->size];  // Return the middle key for parent insertion
 }

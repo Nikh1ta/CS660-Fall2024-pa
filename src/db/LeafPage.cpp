@@ -15,60 +15,53 @@ LeafPage::LeafPage(Page &page, const TupleDesc &td, size_t key_index)
 }
 
 bool LeafPage::insertTuple(const Tuple &t) {
-    int key = std::get<int>(t.get_field(key_index));  // Get the key
+    int key = std::get<int>(t.get_field(key_index));
     size_t insertPos = 0;
-
-    // Find the position to insert the tuple
-    while (insertPos < header->size && std::get<int>(getTuple(insertPos).get_field(key_index)) < key) {
+    while (insertPos < header->size) {
+        Tuple currentTuple = getTuple(insertPos);
+        int currentKey = std::get<int>(currentTuple.get_field(key_index));
+        if (currentKey >= key) {
+            break;
+        }
         ++insertPos;
     }
-
-    // Overwrite the existing tuple if the key matches
     if (insertPos < header->size && std::get<int>(getTuple(insertPos).get_field(key_index)) == key) {
         td.serialize(data + (insertPos * td.length()), t);
-        return header->size >= capacity;  // Return whether the page is full
+        return header->size >= capacity;
     }
-
-    // If the page is full, return true to indicate a split is needed
     if (header->size >= capacity) {
         return true;
     }
+    std::memmove(data + ((insertPos + 1) * td.length()),
+               data + (insertPos * td.length()),
+               (header->size - insertPos) * td.length());
 
-    // Shift tuples to make space for the new tuple
-    std::memmove(data + ((insertPos + 1) * td.length()), data + (insertPos * td.length()),
-                 (header->size - insertPos) * td.length());
-
-    // Insert the new tuple
     td.serialize(data + (insertPos * td.length()), t);
-    header->size++;  // Increment the number of tuples
-
-    return header->size >= capacity;  // Return whether the page is full
+    header->size++;
+    return header->size >= capacity;
 }
 
 int LeafPage::split(LeafPage &new_page) {
     size_t splitPoint = header->size / 2;
     size_t tupleSize = td.length();
 
-    // Move half the tuples to the new page
     std::memcpy(new_page.data, data + (splitPoint * tupleSize), (header->size - splitPoint) * tupleSize);
 
-    // Update sizes for both pages
     new_page.header->size = header->size - splitPoint;
     header->size = splitPoint;
 
-    // Ensure the next leaf pointer is updated correctly
+    Tuple middleTuple = new_page.getTuple(0);
+    int splitKey = std::get<int>(middleTuple.get_field(key_index));
+
     new_page.header->next_leaf = header->next_leaf;
     header->next_leaf = new_page.header->next_leaf;
-
-    // Return the key of the first tuple in the new page
-    Tuple middleTuple = new_page.getTuple(0);
-    return std::get<int>(middleTuple.get_field(key_index));
+    return splitKey;
 }
 
 Tuple LeafPage::getTuple(size_t slot) const {
     if (slot >= header->size) {
-        throw std::out_of_range("Invalid slot");
+        throw std::out_of_range("Slot index out of range");
     }
-
-    return td.deserialize(data + slot * td.length());
+    size_t offset = slot * td.length();
+    return td.deserialize(data + offset);
 }
