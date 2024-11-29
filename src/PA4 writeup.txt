@@ -1,0 +1,16 @@
+PA4 writeup
+
+Describe any design decisions you made.
+
+The ColumnStats class is robust as it checks parameters, clamps bucket indices, and ignores out-of-range values while dividing the range evenly with precise fractional contributions for cardinality estimates. It supports all predicate operations, uses efficient std::vector storage, and handles errors for unsupported operations to ensure reliability.
+
+Missing or Incomplete elements-
+One limitation of the implementation is that it only works with integer data and does not support non-integer or categorical values. The design also assumes that the values are uniformly distributed across the buckets, which may be quite inaccurate for highly skewed datasets.
+Answer the analytical questions- 
+Done in gradescope!
+
+Describe how long you spent on the assignment, and whether there was anything you found particularly difficult or confusing- We spent around 15 hours on the assignment. We struggled with a few test cases
+
+If you collaborate with someone else, you have to describe how you split the workload-
+Nilay- Worked on debugging
+Nikhita- worked on the code files and also the write up.
