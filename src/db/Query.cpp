@@ -1,4 +1,7 @@
 #include <db/Query.hpp>
+#include <stdexcept>  // For std::runtime_error
+#include <limits>     // For std::numeric_limits
+
 
 using namespace db;
 
